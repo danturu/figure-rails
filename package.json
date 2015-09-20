@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "bower": "1.5.x"
+  },
+
+ "engines": {
+    "node": "0.12.x"
+  }
+}
