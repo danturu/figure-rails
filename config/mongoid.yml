@@ -1,5 +1,5 @@
 production:
-  sessions:
+  clients:
     default:
       uri: <%= ENV["MONGOLAB_URI"] %>
 
@@ -27,7 +27,7 @@ production:
         # poolsize: <%= ENV['NUM_THREADS'] %>
 
 development:
-  sessions:
+  clients:
     default:
       database: figure_server_development
 
@@ -74,7 +74,7 @@ development:
     # use_utc: false
 
 test:
-  sessions:
+  clients:
     default:
       database: figure_server_test
 
