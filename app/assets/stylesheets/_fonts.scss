@@ -1,0 +1,7 @@
+@charset "UTF-8";
+
+// Open Sans
+
+@include font-face(OpenSans, "open_sans_light",    300, normal, $asset-pipeline: true);
+@include font-face(OpenSans, "open_sans_regular",  400, normal, $asset-pipeline: true);
+@include font-face(OpenSans, "open_sans_semibold", 500, normal, $asset-pipeline: true);
