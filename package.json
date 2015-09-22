@@ -1,9 +1,15 @@
 {
   "dependencies": {
-    "bower": "1.5.x"
+    "angular2": "2.0.0-alpha.28",
+    "browserify": "11.1.0",
+    "browserify-incremental": "3.0.1",
+    "coffeeify": "0.4.1",
+    "reflect-metadata": "0.1.2",
+    "tsd": "0.6.4",
+    "tsify": "0.12.1"
   },
 
  "engines": {
-    "node": "0.12.x"
+    "node": ">= 0.10"
   }
 }

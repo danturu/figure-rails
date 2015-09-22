@@ -13,7 +13,10 @@ module FigureServer
     VERSION = "0.1.0"
 
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += [config.root.join("lib"), config.root.join("app/models/users")]
+    config.autoload_paths += [config.root.join("lib")]
+
+    # Custom directories with assets.
+    config.assets.paths += [config.root.join("vendor/assets/javascripts/typings")]
 
     # Configure default locale.
     config.i18n.default_locale = :en
@@ -33,7 +36,21 @@ module FigureServer
     # Precompile fonts.
     config.assets.precompile += %w(*.woff2 *.eot *.ttf *.woff *.svg)
 
-    # This is how we send emails.
+    # TypeScript compiling.
+
+    config.after_initialize do
+      assets.register_engine '.ts', TypeScriptTemplate
+    end
+
+    config.annotations.register_extensions("ts") do |annotation|
+      /#\s*(#{annotation}):?\s*(.*)$/
+    end
+
+    config.browserify_rails.force = ->(file) { File.extname(file) == ".ts" }
+
+    config.browserify_rails.commandline_options = "-p [tsify --module commonjs --target es5 --noImplicitAny --experimentalDecorators] --extension=.ts"
+
+    # Email sending.
 
     config.action_mailer.default_options = {
       from: "Figure <no-reply@figure-app.com>"

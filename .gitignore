@@ -3,7 +3,9 @@
 .env
 .foreman
 .rspec
+/app/assets/javascripts/typings/tsd.d.ts
 /log/*.log
+/node_modules
 /tmp
-/vendor/assets/bower.json
-/vendor/assets/bower_components
+/vendor/assets/javascripts/typings
+npm-debug.log
