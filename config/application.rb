@@ -9,6 +9,17 @@ require "sprockets/railtie"
 Bundler.require(*Rails.groups)
 
 module FigureServer
+  class TypeScriptTemplate < Tilt::Template
+    self.default_mime_type = "application/javascript"
+
+    def prepare
+    end
+
+    def evaluate(scope, locals, &block)
+      @output ||= data
+    end
+  end
+
   class Application < Rails::Application
     VERSION = "0.1.0"
 
@@ -38,9 +49,7 @@ module FigureServer
 
     # TypeScript compiling.
 
-    config.after_initialize do
-      assets.register_engine '.ts', TypeScriptTemplate
-    end
+    assets.register_engine '.ts', TypeScriptTemplate
 
     config.annotations.register_extensions("ts") do |annotation|
       /#\s*(#{annotation}):?\s*(.*)$/

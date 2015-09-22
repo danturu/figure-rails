@@ -12,5 +12,4 @@ namespace :assets do
   end
 end
 
-
 Rake::Task["assets:precompile"].enhance ["assets:install:tsd"]
