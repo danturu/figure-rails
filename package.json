@@ -1,15 +1,14 @@
 {
   "dependencies": {
     "angular2": "2.0.0-alpha.28",
-    "browserify": "11.1.0",
-    "browserify-incremental": "3.0.1",
-    "coffeeify": "0.4.1",
-    "reflect-metadata": "0.1.2",
-    "tsd": "0.6.4",
-    "tsify": "0.12.1"
+    "browserify": "11.1.x",
+    "browserify-incremental": "3.0.x",
+    "reflect-metadata": "0.1.x",
+    "tsd": "0.6.x",
+    "tsify": "0.12.x"
   },
 
  "engines": {
-    "node": ">= 0.10"
+    "node": ">= 0.12.x"
   }
 }
