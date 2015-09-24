@@ -1,9 +1,10 @@
 /// <reference path='typings/tsd.d.ts' />
 /// <reference path="typings/window.d.ts" />
 
+import 'es6-symbol/implement'
 import 'reflect-metadata'
 
-import { Component, View, bootstrap } from "angular2/angular2";
+import { Component, View, bootstrap } from 'angular2/angular2'
 
 @Component({
   selector: 'figure'

@@ -3,6 +3,7 @@
     "angular2": "2.0.0-alpha.28",
     "browserify": "11.1.x",
     "browserify-incremental": "3.0.x",
+    "es6-symbol": "2.0.x",
     "reflect-metadata": "0.1.x",
     "tsd": "0.6.x",
     "tsify": "0.12.x"
