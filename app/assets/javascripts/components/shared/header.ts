@@ -11,7 +11,6 @@ import { RouterLink, RouteParams } from 'angular2/router';
   directives: [RouterLink],
 
   template: `
-    sdc
     <nav class="account">
       <ul>
         <!-- <li><a [router-link]="['./']">/a></li> -->

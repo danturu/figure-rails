@@ -1,8 +1,17 @@
 /// <reference path='typings/tsd.d.ts' />
+/// <reference path='typings/string.d.ts' />
 /// <reference path='typings/window.d.ts' />
 
 import 'es6-symbol/implement'
 import 'reflect-metadata'
+
+// Safari and Internet Explorer doesn't support String.prototype.startsWith() method.
+
+if (!String.prototype.startsWith) {
+  String.prototype.startsWith = function(search: string, position: number = 0) : boolean {
+    return this.indexOf(search, position) === position;
+  };
+}
 
 // Decorators, Services
 
