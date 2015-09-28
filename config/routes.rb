@@ -29,6 +29,8 @@ Rails.application.routes.draw do
         actions = [:index, :show, :create, :update, :destroy] if actions.empty?
         resources name, options.merge(only: actions), &block
       end
+
+      v1_many :forms
     end
   end
 
