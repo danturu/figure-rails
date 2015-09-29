@@ -1,4 +1,4 @@
 interface Window {
-  bootstrapFigure: () => void;
+  main: () => void;
 }
 

@@ -1,17 +1,10 @@
 /// <reference path='typings/tsd.d.ts' />
-/// <reference path='typings/string.d.ts' />
 /// <reference path='typings/window.d.ts' />
 
-import 'es6-symbol/implement'
+import 'core-js/es6/string';
+import 'core-js/es6/symbol';
 import 'reflect-metadata'
-
-// Safari and Internet Explorer doesn't support String.prototype.startsWith() method.
-
-if (!String.prototype.startsWith) {
-  String.prototype.startsWith = function(search: string, position: number = 0) : boolean {
-    return this.indexOf(search, position) === position;
-  };
-}
+import 'zone.js'
 
 // Decorators, Services
 
@@ -55,6 +48,6 @@ class Figure {
   }
 }
 
-window.bootstrapFigure = function() {
-  bootstrap(Figure, [ROUTER_BINDINGS]);
+window.main = function() {
+  bootstrap(Figure, [ROUTER_BINDINGS, HTTP_BINDINGS]).catch(err => console.error(err));
 }

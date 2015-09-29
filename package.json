@@ -3,10 +3,11 @@
     "angular2": "2.0.0-alpha.37",
     "browserify": "11.1.x",
     "browserify-incremental": "3.0.x",
-    "es6-symbol": "2.0.x",
+    "core-js": "1.2.0",
     "reflect-metadata": "0.1.x",
     "tsd": "0.6.x",
-    "tsify": "0.12.x"
+    "tsify": "0.12.x",
+    "zone.js": "0.5.6"
   },
 
  "engines": {

@@ -57,7 +57,7 @@ module FigureServer
 
     config.browserify_rails.force = ->(file) { File.extname(file) == ".ts" }
 
-    config.browserify_rails.commandline_options = "-p [tsify --module commonjs --target es5 --noImplicitAny --experimentalDecorators] --extension=.ts"
+    config.browserify_rails.commandline_options = "-p [tsify --module commonjs --target es5 --noImplicitAny --experimentalDecorators --emitDecoratorMetadata] --extension=.ts"
 
     # Email sending.
 
