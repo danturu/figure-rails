@@ -6,25 +6,16 @@ import 'core-js/es6/symbol';
 import 'reflect-metadata'
 import 'zone.js'
 
-// Decorators, Services
+import { Component, View, bootstrap  }                     from 'angular2/angular2'
+import { ROUTER_DIRECTIVES, ROUTER_BINDINGS, RouteConfig } from 'angular2/router'
+import { HTTP_BINDINGS }                                   from 'angular2/http'
 
-import { Component, View }            from 'angular2/angular2'
-import { RouteConfig, RouterOutlet }  from 'angular2/router'
-
-// Directives, Bindings
-
-import { ROUTER_BINDINGS } from 'angular2/router'
-
-// Components
-
-import { Header as SharedHeaderComponent } from './components/shared/exports'
-
-// Functions
-
-import { bootstrap } from 'angular2/angular2'
+import * as SharedComponent from './components/shared/exports'
+import * as FormComponent   from './components/forms/exports'
 
 @RouteConfig([
-  // { path: '/app', component: SharedHeaderComponent, as: "component" }
+  { path: '/app/forms/new',     component: FormComponent.New,       as: "New" },
+  { path: '/app/forms/:id/...', component: FormComponent.Dashboard, as: "Dashboard" }
 ])
 
 @Component({
@@ -32,7 +23,7 @@ import { bootstrap } from 'angular2/angular2'
 })
 
 @View({
-  directives: [RouterOutlet, SharedHeaderComponent],
+  directives: [ROUTER_DIRECTIVES, SharedComponent.Header],
 
   template: `
     <header class="app"></header>
@@ -44,8 +35,6 @@ import { bootstrap } from 'angular2/angular2'
 })
 
 class Figure {
-  constructor() {
-  }
 }
 
 window.main = function() {
