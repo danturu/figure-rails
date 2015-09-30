@@ -4,6 +4,7 @@
     "browserify": "11.1.x",
     "browserify-incremental": "3.0.x",
     "core-js": "1.2.0",
+    "normalize-css": "2.3.1",
     "reflect-metadata": "0.1.x",
     "tsd": "0.6.x",
     "tsify": "0.12.x",

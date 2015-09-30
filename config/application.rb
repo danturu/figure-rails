@@ -27,7 +27,7 @@ module FigureServer
     config.autoload_paths += [config.root.join("lib")]
 
     # Custom directories with assets.
-    config.assets.paths += [config.root.join("vendor/assets/javascripts/typings")]
+    config.assets.paths += [config.root.join("node_modules"), config.root.join("vendor/assets/javascripts/typings")]
 
     # Configure default locale.
     config.i18n.default_locale = :en
