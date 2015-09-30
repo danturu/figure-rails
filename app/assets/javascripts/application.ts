@@ -1,8 +1,8 @@
 /// <reference path='typings/tsd.d.ts' />
 /// <reference path='typings/window.d.ts' />
 
-import 'core-js/es6/string';
-import 'core-js/es6/symbol';
+import 'core-js/es6/string'
+import 'core-js/es6/symbol'
 import 'reflect-metadata'
 import 'zone.js'
 
@@ -19,14 +19,14 @@ import * as FormComponent   from './components/forms/exports'
 ])
 
 @Component({
-  selector: 'figure'
+  selector: 'app'
 })
 
 @View({
   directives: [ROUTER_DIRECTIVES, SharedComponent.Header],
 
   template: `
-    <header class="app"></header>
+    <header></header>
 
     <main>
       <router-outlet></router-outlet>
@@ -35,6 +35,8 @@ import * as FormComponent   from './components/forms/exports'
 })
 
 class Figure {
+  constructor() {
+  }
 }
 
 window.main = function() {

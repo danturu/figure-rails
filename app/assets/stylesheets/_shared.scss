@@ -1,4 +1,5 @@
 html {
+  @include size(100%);
   box-sizing: border-box !important;
   font-size: 62.5%;
 }

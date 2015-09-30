@@ -1,0 +1,73 @@
+body.app {
+  height: 100%;
+}
+
+app {
+  @include display(flex);
+  @include size(100%);
+}
+
+app > header {
+  @include display(flex);
+  @include flex(1);
+  @include flex-direction(column);
+  background-color: $color-figure;
+  max-width: 300px;
+  min-width: 200px;
+
+  a.logo {
+    @include size(100% 50px);
+    display: block;
+    margin: 20px 0 10px;
+    padding: 0px 30px;
+
+    i {
+      @include size(100%);
+      background: transparent asset-data-url("figure.svg") center left / contain no-repeat;
+      display: block;
+    }
+  }
+
+  nav {
+    color: white;
+
+    a {
+      @include transition(color .1s linear);
+      color: darken(white, 20);
+      display: block;
+      font-weight: 500;
+      padding: 20px 30px;
+
+      &:hover {
+        color: white;
+      }
+
+      &.router-link-active {
+        background-color: rgba(white, .1);
+        color: white;
+      }
+    }
+  }
+
+  nav.forms {
+    @include flex(1);
+
+    overflow: {
+      x: hidden; y: auto;
+    }
+  }
+
+  nav.account {
+    margin-top: auto;
+  }
+}
+
+app main {
+  @include flex(4);
+  background-color: darken(white, 5);
+  min-width: 700px;
+
+  overflow: {
+    x: hidden; y: auto;
+  }
+}
