@@ -14,14 +14,17 @@
     "angular2/router.d.ts": {
       "commit": "32029fcb4e1a3ef8968711b545d77b584435729d"
     },
-    "rx/rx.d.ts": {
-      "commit": "d0adccc436197cc7c3559322721e9df86b892bd6"
-    },
-    "rx/rx-lite.d.ts": {
-      "commit": "d0adccc436197cc7c3559322721e9df86b892bd6"
-    },
     "angular2/http.d.ts": {
       "commit": "d0adccc436197cc7c3559322721e9df86b892bd6"
+    },
+    "rx/rx.d.ts": {
+      "commit": "ebc69904eb78f94030d5d517b42db20867f679c0"
+    },
+    "rx/rx-lite.d.ts": {
+      "commit": "ebc69904eb78f94030d5d517b42db20867f679c0"
+    },
+    "rx/rx.binding-lite.d.ts": {
+      "commit": "ebc69904eb78f94030d5d517b42db20867f679c0"
     }
   }
 }
