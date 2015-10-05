@@ -5,18 +5,6 @@
   "path": "vendor/assets/javascripts/typings",
   "bundle": "app/assets/javascripts/typings/tsd.d.ts",
   "installed": {
-    "es6-promise/es6-promise.d.ts": {
-      "commit": "d0adccc436197cc7c3559322721e9df86b892bd6"
-    },
-    "angular2/angular2.d.ts": {
-      "commit": "d0adccc436197cc7c3559322721e9df86b892bd6"
-    },
-    "angular2/router.d.ts": {
-      "commit": "32029fcb4e1a3ef8968711b545d77b584435729d"
-    },
-    "angular2/http.d.ts": {
-      "commit": "d0adccc436197cc7c3559322721e9df86b892bd6"
-    },
     "rx/rx.d.ts": {
       "commit": "ebc69904eb78f94030d5d517b42db20867f679c0"
     },

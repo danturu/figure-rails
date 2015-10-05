@@ -1,17 +1,39 @@
-import { Component, View }   from 'angular2/angular2'
-import { ROUTER_DIRECTIVES } from 'angular2/router'
+import { CORE_DIRECTIVES, FORM_DIRECTIVES, Component, View } from 'angular2/angular2'
+import { Form, FormAttrs }                                   from '../../models/form'
 
 @Component({
   selector: 'new.form'
 })
 
 @View({
-  directives: [ROUTER_DIRECTIVES],
+  directives: [CORE_DIRECTIVES, FORM_DIRECTIVES],
 
   template: `
-    <h1>New Form</h1>
+    <header class="new">
+      <h1>New Form</h1>
+      <p>Smart name matters</p>
+    </header>
+
+    <form #f="form" (ng-submit)="onSubmit(f.value)">
+      <label>
+        <div>Name</div>
+        <input type="text" ng-control="name">
+      </label>
+
+      <label>
+        <div>Notifications</div>
+        <input type="text" ng-control="email">
+      </label>
+
+      <div>
+        <button type="submit">Create Form</form>
+      </div>
+    </form>
   `
 })
 
 export class New {
+  onSubmit(data: FormAttrs) {
+    console.log(data);
+  }
 }

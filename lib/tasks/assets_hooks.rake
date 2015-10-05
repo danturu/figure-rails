@@ -5,7 +5,8 @@ namespace :assets do
     end
 
     task :tsd do
-      system("tsd install")
+      system("tsd reinstall")
+      system("tsd link --config tsd.json")
     end
 
     task :all => [:npm, :tsd]
