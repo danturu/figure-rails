@@ -1,18 +1,16 @@
 {
   "dependencies": {
-    "@reactivex/rxjs": "5.0.0-alpha.1",
     "angular2": "2.0.0-alpha.38",
-    "browserify": "11.1.x",
-    "browserify-incremental": "3.0.x",
     "core-js": "1.2.0",
     "normalize-css": "2.3.1",
-    "reflect-metadata": "0.1.x",
-    "tsd": "0.6.x",
-    "tsify": "0.12.x",
+    "reflect-metadata": "0.1.2",
+    "tsd": "0.6.5",
     "zone.js": "0.5.6"
   },
-
- "engines": {
+  "devDependencies": {
+    "gulp": "3.9.0"
+  },
+  "engines": {
     "node": ">= 0.12.x"
   }
 }
