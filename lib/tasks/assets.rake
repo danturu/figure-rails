@@ -19,7 +19,11 @@ namespace :assets do
     sh "gulp watch"
   end
 
+  task :reset do
+    sh "gulp reset"
+  end
+
   task :clean do
-    # sh "gulp clean"
+    # noop for Heroku
   end
 end

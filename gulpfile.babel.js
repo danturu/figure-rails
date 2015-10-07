@@ -3,7 +3,7 @@ import autoprefixer from 'gulp-autoprefixer';
 import base64       from 'gulp-base64';
 import browserify   from 'browserify';
 import buffer       from 'vinyl-buffer';
-import clean        from 'gulp-clean';
+import del          from 'del'
 import gulp         from 'gulp';
 import gulpif       from 'gulp-if';
 import minify       from 'gulp-minify-css';
@@ -25,11 +25,11 @@ var dest   = 'public/assets';
 var isProduction = () => env === 'production'
 
 gulp.task('default', (cb) =>
-  sequence('clean', ['svg', 'fonts', 'images'], 'sass', 'ts', 'manifest', cb)
+  sequence('reset', ['svg', 'fonts', 'images'], 'sass', 'ts', 'manifest', cb)
 );
 
 gulp.task('watch', (cb) =>
-  sequence('clean', ['svg', 'fonts', 'images'], 'sass', 'ts:watch', 'all:watch', cb)
+  sequence('reset', ['svg', 'fonts', 'images'], 'sass', 'ts:watch', 'all:watch', cb)
 );
 
 gulp.task('manifest', function() {
@@ -43,8 +43,8 @@ gulp.task('manifest', function() {
     .pipe(gulp.dest('public/assets'));
 });
 
-gulp.task('clean', () =>
-  gulp.src(dest, { read: false }).pipe(clean())
+gulp.task('reset', () =>
+  del(dest)
 );
 
 gulp.task('svg', () =>
