@@ -3,7 +3,7 @@
 .env
 .foreman
 .rspec
-/app/assets/javascripts/typings/tsd.d.ts
+/app/assets/javascripts/typings/tsd
 /log/*.log
 /node_modules
 /public/assets

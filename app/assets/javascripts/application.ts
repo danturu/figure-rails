@@ -1,4 +1,4 @@
-/// <reference path='typings/tsd.d.ts' />
+/// <reference path='typings/tsd/tsd.d.ts' />
 /// <reference path='typings/window.d.ts' />
 
 import 'core-js/es6/string'
