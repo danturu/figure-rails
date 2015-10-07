@@ -5,7 +5,7 @@ require "action_controller/railtie"
 require "action_mailer/railtie"
 require "action_view/railtie"
 
-Bundler.require(*Rails.groups)
+Bundler.require *Rails.groups
 
 module FigureServer
   class Application < Rails::Application
@@ -28,6 +28,13 @@ module FigureServer
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true
+
+    # Disable asset pipeline.
+    config.assets.enabled = false
+
+    config.generators do |g|
+      g.assets false
+    end
 
     # Email sending.
     config.action_mailer.default_options = {
