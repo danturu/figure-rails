@@ -22,17 +22,15 @@ var env    = process.env.NODE_ENV || 'development'
 var assets = 'app/assets';
 var dest   = 'public/assets';
 
-function isProduction() {
-  return env === 'production';
-}
+var isProduction = () => env === 'production'
 
-gulp.task('default', (cb) => {
-  if (isProduction()) {
-    return sequence('clean', ['svg', 'fonts', 'images'], 'sass', 'ts', 'manifest', cb);
-  } else {
-    return sequence('clean', ['svg', 'fonts', 'images'], 'sass', 'ts:watch', 'watch', cb);
-  }
-});
+gulp.task('default', (cb) =>
+  sequence('clean', ['svg', 'fonts', 'images'], 'sass', 'ts', 'manifest', cb)
+);
+
+gulp.task('watch', (cb) =>
+  sequence('clean', ['svg', 'fonts', 'images'], 'sass', 'ts:watch', 'all:watch', cb)
+);
 
 gulp.task('manifest', function() {
   var revAll = new RevAll();
@@ -79,7 +77,7 @@ gulp.task('ts', ts());
 
 gulp.task('ts:watch', ts({ watch: true }));
 
-gulp.task('watch', () => {
+gulp.task('all:watch', () => {
   gulp.watch(`${assets}/images/**/*.svg`, ['svg']);
   gulp.watch(`${assets}/images/**/*.{png,jpg}`, ['images']);
   gulp.watch(`${assets}/fonts/**/*.{eot,svg,ttf,woff,woff2}`, ['fonts']);
