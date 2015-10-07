@@ -1,12 +1,12 @@
 html {
-  @include size(100%);
   box-sizing: border-box !important;
   font-size: 62.5%;
+  height: 100%;
 }
 
 body {
   color: lighten(black, 25%);
-  font-family: OpenSans, $helvetica;
+  font-family: OpenSans, $fonts;
   font-size: 13px;
   font-weight: 400;
   line-height: 1.45;

@@ -3,15 +3,15 @@ body.app {
 }
 
 app {
-  @include display(flex);
   @include size(100%);
+  display: flex;
 }
 
 app > header {
-  @include display(flex);
-  @include flex(1);
-  @include flex-direction(column);
   background-color: $color-figure;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
   max-width: 300px;
   min-width: 200px;
 
@@ -32,7 +32,7 @@ app > header {
     color: white;
 
     a {
-      @include transition(color .1s linear);
+      transition: color .1s linear;
       color: darken(white, 20);
       display: block;
       font-weight: 500;
@@ -50,7 +50,7 @@ app > header {
   }
 
   nav.forms {
-    @include flex(1);
+    flex: 1;
 
     overflow: {
       x: hidden; y: auto;
@@ -63,8 +63,8 @@ app > header {
 }
 
 app main {
-  @include flex(4);
   background-color: darken(white, 5);
+  flex: 4;
   min-width: 700px;
 
   overflow: {

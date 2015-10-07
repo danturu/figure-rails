@@ -3,7 +3,6 @@ ruby '2.2.2'
 source 'https://rubygems.org'
 
 gem 'active_model_serializers', '>= 0.10.0.rc'
-gem 'bourbon',                  '4.2.5'
 gem 'devise',                   '3.5.2'
 gem 'mongoid',                  '5.0.0'
 gem 'puma',                     '2.14.0'
