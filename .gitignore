@@ -6,6 +6,7 @@
 /app/assets/javascripts/typings/tsd.d.ts
 /log/*.log
 /node_modules
+/public/assets
 /tmp
 /vendor/assets/javascripts/typings
 npm-debug.log

@@ -2,7 +2,7 @@
   "version": "v4",
   "repo": "borisyankov/DefinitelyTyped",
   "ref": "master",
-  "path": "vendor/assets/javascripts/typings",
+  "path": "node_modules/definitely-typed",
   "bundle": "app/assets/javascripts/typings/tsd.d.ts",
   "installed": {
     "rx/rx.d.ts": {
