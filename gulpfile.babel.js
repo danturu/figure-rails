@@ -1,92 +1,105 @@
+import gulp         from 'gulp';
 import RevAll       from 'gulp-rev-all';
 import autoprefixer from 'gulp-autoprefixer';
 import base64       from 'gulp-base64';
-import browserify   from 'browserify';
-import buffer       from 'vinyl-buffer';
-import del          from 'del'
-import gulp         from 'gulp';
 import gulpif       from 'gulp-if';
 import minify       from 'gulp-minify-css';
 import sass         from 'gulp-sass';
 import sequence     from 'gulp-sequence';
-import source       from 'vinyl-source-stream';
 import sourcemaps   from 'gulp-sourcemaps';
-import svgmin       from 'gulp-svgmin';
-import tsify        from 'tsify';
 import uglify       from 'gulp-uglify';
 import util         from 'gulp-util';
 import watch        from 'gulp-watch';
+import browserify   from 'browserify';
+import buffer       from 'vinyl-buffer';
+import del          from 'del'
+import source       from 'vinyl-source-stream';
+import tsify        from 'tsify';
 import watchify     from 'watchify';
 
-var env    = process.env.NODE_ENV || 'development'
-var assets = 'app/assets';
-var dest   = 'public/assets';
+var env = process.env.NODE_ENV || 'development'
 
-var isProduction = () => env === 'production'
+var config = {
+  env: {
+    production: env === 'production', development: env === 'development', test: env === 'test'
+  },
 
-gulp.task('default', (cb) =>
-  sequence('reset', ['svg', 'fonts', 'images'], 'sass', 'ts', 'manifest', cb)
+  ext: {
+    svg: "svg", images: "{png,jpg}", fonts: "{eot,svg,ttf,woff,woff2}", sass: "{scss,css}"
+  },
+
+  src: 'app/assets', dest: 'public/assets'
+}
+
+gulp.task('default', (callback) =>
+  sequence('reset', ['svg', 'fonts', 'images'], 'sass', 'ts', 'manifest', callback)
 );
 
-gulp.task('watch', (cb) =>
-  sequence('reset', ['svg', 'fonts', 'images'], 'sass', 'ts:watch', 'all:watch', cb)
+gulp.task('watch', (callback) =>
+  sequence('reset', ['svg', 'fonts', 'images'], 'sass', ['svg:watch', 'fonts:watch', 'images:watch', 'sass:watch', 'ts:watch'], callback)
 );
-
-gulp.task('manifest', function() {
-  var revAll = new RevAll();
-
-  return gulp.src(['public/assets/**'])
-    .pipe(gulp.dest('public/assets'))
-    .pipe(revAll.revision())
-    .pipe(gulp.dest('public/assets'))
-    .pipe(revAll.manifestFile())
-    .pipe(gulp.dest('public/assets'));
-});
 
 gulp.task('reset', () =>
-  del(dest)
+  del(config.dest)
 );
+
+gulp.task('manifest', () => {
+  var revAll = new RevAll();
+
+  return gulp.src([`${config.dest}/**`])
+    .pipe(gulp.dest(config.dest))
+    .pipe(revAll.revision())
+    .pipe(gulp.dest(config.dest))
+    .pipe(revAll.manifestFile())
+    .pipe(gulp.dest(config.dest));
+});
 
 gulp.task('svg', () =>
-  gulp.src(`${assets}/images/**/*.svg`).pipe(gulp.dest(dest))
+  gulp.src(`${config.src}/images/**/*.${config.ext.svg}`).pipe(gulp.dest(config.dest))
 );
+
+gulp.task('svg:watch', () =>
+  gulp.watch(`${config.src}/images/**/*.${config.ext.svg}`, ['svg'])
+)
 
 gulp.task('images', () =>
-  gulp.src(`${assets}/images/**/*.{png,jpg}`).pipe(gulp.dest(dest))
+  gulp.src(`${config.src}/images/**/*.${config.ext.images}`).pipe(gulp.dest(config.dest))
 );
+
+gulp.task('images:watch', () =>
+  gulp.watch(`${config.src}/images/**/*.${config.ext.images}`, ['images'])
+)
 
 gulp.task('fonts', () =>
-  gulp.src(`${assets}/fonts/**/*.{eot,svg,ttf,woff,woff2}`).pipe(gulp.dest(dest))
+  gulp.src(`${config.src}/fonts/**/*.${config.ext.fonts}`).pipe(gulp.dest(config.dest))
 );
 
+gulp.task('fonts:watch', () =>
+  gulp.watch(`${config.src}/fonts/**/*.${config.ext.fonts}`, ['fonts'])
+)
+
 gulp.task('sass', () =>
-  gulp.src(`${assets}/stylesheets/application.scss`)
+  gulp.src(`${config.src}/stylesheets/application.scss`)
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(sass({ includePaths: 'node_modules' }).on('error', sass.logError))
-    .pipe(gulpif(isProduction(), base64({
-      baseDir: 'public/assets',
-      debug: isProduction()
-    })))
+    .pipe(gulpif(config.env.production, base64({ baseDir: config.dest,  extensions: [/\#datauri('|")?$/i], maxImageSize: 0 })))
     .pipe(autoprefixer())
-    .pipe(gulpif(isProduction(), minify()))
+    .pipe(gulpif(config.env.production, minify()))
     .pipe(sourcemaps.write('.'))
-    .pipe(gulp.dest(dest))
+    .pipe(gulp.dest(config.dest))
 );
+
+gulp.task('sass:watch', () =>
+  gulp.watch(`{${config.src}/stylesheets,node_modules}/**/*.${config.ext.sass}`, ['sass'])
+)
 
 gulp.task('ts', ts());
 
 gulp.task('ts:watch', ts({ watch: true }));
 
-gulp.task('all:watch', () => {
-  gulp.watch(`${assets}/images/**/*.svg`, ['svg']);
-  gulp.watch(`${assets}/images/**/*.{png,jpg}`, ['images']);
-  gulp.watch(`${assets}/fonts/**/*.{eot,svg,ttf,woff,woff2}`, ['fonts']);
-  gulp.watch(`{${assets}/stylesheets,node_modules}/**/*.{scss,css}`, ['sass']);
-})
-
 function ts(options={}) {
-  var b = browserify(Object.assign({}, watchify.args, { debug: isProduction() }))
-    .add('app/assets/javascripts/application.ts')
+  var b = browserify(Object.assign({}, watchify.args, { debug: config.env.production }))
+    .add(`${config.src}/javascripts/application.ts`)
     .plugin(tsify, {
       target: 'es5',
       module: 'commonjs',
@@ -105,9 +118,9 @@ function ts(options={}) {
       .pipe(source('application.js'))
       .pipe(buffer())
       .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(gulpif(isProduction(), uglify()))
+      .pipe(gulpif(config.env.production, uglify()))
       .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest(dest));
+      .pipe(gulp.dest(config.dest));
   }
 
   return bundle;
