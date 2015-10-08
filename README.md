@@ -1,8 +1,36 @@
-## Development
+## Quick start
 
-### Install assets including TypeScript definition files.
+With [Bundler](http://bundler.io) and [npm](http://npmjs.org) do:
 
-`rake assets:install:node`
+1. `git clone https://github.com/rosendi/figure-server.git && cd figure-server`
+
+2. `bundle install`
+
+3. `rake assets:install` or `npm install && tsd install`
+
+4. `rake assets:watch` or `gulp watch`
+
+## Assets management using Gulp
+
+Install a package, and any packages that it depends on:
+
+`rake assets:install:npm` is equivalent to `npm install`
+
+Install definitions for TypeScript ([more info](https://github.com/DefinitelyTyped/tsd) how to use TSD package manager):
+
+`rake assets:install:tsd` (runs `tsd install && tsd rebundle`)
+
+Precompile assets (set `NODE_ENV=production` to optimize it):
+
+`rake assets:precompile` (runs `tsd install && tsd rebundle && gulp`)
+
+Precompile assets and recompile it on any changes while developing:
+
+`rake assets:watch` (runs `gulp watch`)
+
+Remove precompiled assets:
+
+`rake assets:reset` (runs `gulp reset`)
 
 ## Deployment on Heroku.
 
