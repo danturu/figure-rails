@@ -1,7 +1,23 @@
-@charset "UTF-8";
+@font-face {
+  src: url("open_sans_light.woff");
 
-// Open Sans
+  font: {
+    family: OpenSans; weight: 300;
+  }
+}
 
-@include font-face(OpenSans, "open_sans_light",    300, normal, $asset-pipeline: true);
-@include font-face(OpenSans, "open_sans_regular",  400, normal, $asset-pipeline: true);
-@include font-face(OpenSans, "open_sans_semibold", 500, normal, $asset-pipeline: true);
+@font-face {
+  src: url("open_sans_regular.woff");
+
+  font: {
+    family: OpenSans; weight: 400;
+  }
+}
+
+@font-face {
+  src: url("open_sans_semibold.woff");
+
+  font: {
+    family: OpenSans; weight: 500;
+  }
+}
