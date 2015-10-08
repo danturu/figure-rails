@@ -23,7 +23,7 @@ app > header {
 
     i {
       @include size(100%);
-      background: transparent asset-data-url("figure.svg") center left / contain no-repeat;
+      background: transparent url("figure.svg#datauri") center left / contain no-repeat;
       display: block;
     }
   }
