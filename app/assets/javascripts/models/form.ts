@@ -1,15 +1,15 @@
-import { TimestampModel, TimestampAttrs } from '../services/data'
+import { Record }         from 'immutable'
+import { TimestampAttrs } from '../services/data'
 
 export interface FormAttrs extends TimestampAttrs {
   name: string;
 }
 
-export class Form extends TimestampModel {
-  name: string;
+export const FormRecord = Record<FormAttrs>({
+  id:        null,
+  createdAt: null,
+  updatedAt: null,
+  name:      null,
+})
 
-  constructor(data: FormAttrs) {
-    super(data);
-
-    this.name = data.name;
-  }
-}
+export type Form = Record.Generic<FormAttrs>;

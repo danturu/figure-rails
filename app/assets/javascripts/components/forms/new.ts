@@ -1,5 +1,5 @@
 import { CORE_DIRECTIVES, FORM_DIRECTIVES, Component, View } from 'angular2/angular2'
-import { Form, FormAttrs }                                   from '../../models/form'
+import { Form, FormRecord }                                  from '../../models/form'
 
 @Component({
   selector: 'new.form'
@@ -33,7 +33,7 @@ import { Form, FormAttrs }                                   from '../../models/
 })
 
 export class New {
-  onSubmit(data: FormAttrs) {
+  onSubmit(data: Form) {
     console.log(data);
   }
 }

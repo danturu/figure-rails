@@ -1,24 +1,24 @@
-import { CORE_DIRECTIVES, Component, View, Pipe, PipeTransform} from 'angular2/angular2'
-import { ROUTER_DIRECTIVES, Location }                          from 'angular2/router'
+import { CORE_DIRECTIVES, Component, View, Input, Pipe, PipeTransform, ChangeDetectionStrategy } from 'angular2/angular2'
+import { ROUTER_DIRECTIVES, Location }                                                           from 'angular2/router'
+import { List }                                                                                  from 'immutable'
 
-import { DataService } from '../../services/data'
-import { Form }        from '../../models/form'
+import { Form } from '../../models/form'
 
 @Pipe({
   name: 'sort'
 })
 
 class SortPipe implements PipeTransform {
-  transform(value: Form[], args: any[] = null): Form[] {
-    if (Array.isArray(value)) {
-      let predicate = (lhs: Form, rhs: Form): number => {
+  transform(value: List<Form>, args: any[] = null): List<Form> {
+    if (List.isList(value)) {
+      let comparator = (lhs: Form, rhs: Form): number => {
         if (lhs.name < rhs.name) return -1;
         if (lhs.name > rhs.name) return  1;
 
         return 0
       }
 
-      return value.sort(predicate);
+      return value.sort(comparator).toList();
     } else {
       return value;
     }
@@ -26,7 +26,8 @@ class SortPipe implements PipeTransform {
 }
 
 @Component({
-  selector: 'header'
+  selector: 'header',
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 
 @View({
@@ -34,16 +35,16 @@ class SortPipe implements PipeTransform {
   pipes: [SortPipe],
 
   template: `
-    <a [router-link]="['/New']" class="logo"><i></i></a>
+    <a [router-link]="['/NewForm']" class="logo"><i></i></a>
 
     <nav class="forms">
       <ul>
         <li *ng-for="#form of forms | sort">
-          <a [router-link]="['/Dashboard', { id: form.id }, 'Show']">{{ form.name }}</a>
+          <a [router-link]="['/FormDashboard', { formId: form.id }, 'Show']">{{ form.name }}</a>
         </li>
 
         <li>
-          <a class="new" [router-link]="['/New']">► New Form</a>
+          <a class="new" [router-link]="['/NewForm']">► New Form</a>
         </li>
       </ul>
     </nav>
@@ -59,15 +60,7 @@ class SortPipe implements PipeTransform {
 })
 
 export class Header {
-  forms: Form[];
-
-  constructor(private data: DataService) {
-   this.forms = [
-      { id: "1", name: "Form 1", createdAt: new Date().toString(), updatedAt: new Date().toString() },
-      { id: "2", name: "Form 2", createdAt: new Date().toString(), updatedAt: new Date().toString() },
-      { id: "3", name: "Form 3", createdAt: new Date().toString(), updatedAt: new Date().toString() },
-    ]
-  }
+  @Input() forms: List<Form>;
 
   logout(event: MouseEvent) {
     event.preventDefault(); window.location.replace("/logout");

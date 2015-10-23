@@ -1,5 +1,5 @@
 /// <reference path='typings/tsd/tsd.d.ts' />
-/// <reference path='typings/window.d.ts' />
+/// <reference path='typings/record.d.ts' />
 
 import 'core-js/es6/string'
 import 'core-js/es6/symbol'
@@ -7,30 +7,32 @@ import 'core-js/es6/object'
 import 'reflect-metadata'
 import 'zone.js'
 
-import { Component, View, bootstrap }                     from 'angular2/angular2'
-import { ROUTER_DIRECTIVES, routerBindings, RouteConfig } from 'angular2/router'
-import { HTTP_BINDINGS }                                  from 'angular2/http'
+import { Component, View, bootstrap }                       from 'angular2/angular2'
+import { ROUTER_DIRECTIVES, ROUTER_PROVIDERS, RouteConfig } from 'angular2/router'
+import { HTTP_PROVIDERS }                                   from 'angular2/http'
+import { Map, List }                                        from 'immutable'
 
-import { DataService } from './services/data'
-import { RestService } from './services/rest'
+import { DataService, DataAction } from './services/data'
+import { RestService }             from './services/rest'
+import { Form, FormRecord }        from './models/form'
 
 import * as SharedComponent from './components/shared/shared'
 import * as FormComponent   from './components/forms/forms'
 
 @RouteConfig([
-  { path: '/app/forms/new',     component: FormComponent.New,       as: "New" },
-  { path: '/app/forms/:id/...', component: FormComponent.Dashboard, as: "Dashboard" },
+  { path: '/app/forms/new',         component: FormComponent.New,       as: "NewForm" },
+  { path: '/app/forms/:formId/...', component: FormComponent.Dashboard, as: "FormDashboard" },
 ])
 
 @Component({
-  selector: 'app', bindings: [DataService, RestService]
+  selector: 'app', providers: [DataService, RestService]
 })
 
 @View({
   directives: [ROUTER_DIRECTIVES, SharedComponent.Header],
 
   template: `
-    <header></header>
+    <header [forms]="forms"></header>
 
     <main>
       <router-outlet></router-outlet>
@@ -39,10 +41,25 @@ import * as FormComponent   from './components/forms/forms'
 })
 
 class Figure {
-   constructor(private rest: RestService, private data: DataService) {
-   }
+  forms: List<Form>;
+
+  constructor(private rest: RestService, private data: DataService) {
+    let store = data.store<Form>("forms")
+
+    store.on(DataAction.Change, (snapshot) => {
+      this.forms = snapshot.val().toList();
+    });
+
+    // Fake data.
+
+    let date = new Date().toString();
+
+    data.store("forms").set(Map<string, Form>([
+      ["3", new FormRecord({ id: "3", name: "Form 3", createdAt: date, updatedAt: date })],
+      ["1", new FormRecord({ id: "1", name: "Form 1", createdAt: date, updatedAt: date })],
+      ["2", new FormRecord({ id: "2", name: "Form 2", createdAt: date, updatedAt: date })],
+    ]))
+  }
 }
 
-window.main = function() {
-  bootstrap(Figure, [routerBindings(Figure), HTTP_BINDINGS]).catch(err => console.error(err));
-}
+bootstrap(Figure, [ROUTER_PROVIDERS, HTTP_PROVIDERS]).catch(err => console.error(err));

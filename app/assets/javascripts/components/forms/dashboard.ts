@@ -1,5 +1,8 @@
-import { FORM_DIRECTIVES, Component, View }            from 'angular2/angular2'
+import { FORM_DIRECTIVES, Component, View, Input }            from 'angular2/angular2'
 import { RouteParams, RouteConfig, ROUTER_DIRECTIVES } from 'angular2/router';
+
+import { DataService, DataAction } from '../../services/data'
+import { Form, FormRecord }        from '../../models/form'
 
 @Component({
   selector: 'show.form'
@@ -9,11 +12,12 @@ import { RouteParams, RouteConfig, ROUTER_DIRECTIVES } from 'angular2/router';
   directives: [FORM_DIRECTIVES],
 
   template: `
-    <h1>Show Form</h1>
+    <h1>Show Form ({{form}})</h1>
   `
 })
 
 class Show {
+  @Input() form: Form;
 }
 
 @Component({
@@ -29,6 +33,7 @@ class Show {
 })
 
 class Edit {
+  @Input() form: Form;
 }
 
 @Component({
@@ -36,15 +41,15 @@ class Edit {
 })
 
 @RouteConfig([
-  { path: '/',      component: Show,  as: "Show" },
-  { path: '/edit',  component: Edit,  as: "Edit" },
+  { path: '/',     component: Show, as: "Show" },
+  { path: '/edit', component: Edit, as: "Edit" },
 ])
 
 @View({
   directives: [ROUTER_DIRECTIVES],
 
   template: `
-    <h1>header form</h1>
+    <h1>Form ({{form?.name}})</h1>
 
     <nav class="form">
       <ul>
@@ -54,10 +59,25 @@ class Edit {
     </nav>
 
     <container>
-      <router-outlet></router-outlet>
+      <router-outlet [form]="form"></router-outlet>
     </container>
   `
 })
 
 export class Dashboard {
+  form: Form;
+
+  constructor(params: RouteParams, data: DataService) {
+    let store = data.store<Form>("forms")
+
+    store.on(DataAction.Change, (snapshot) => {
+      if (!this.form) {
+        this.form = snapshot.val().get(params.get('formId'));
+      }
+    });
+
+    store.on(DataAction.Update, (snapshot) => {
+      this.form = snapshot.val().get(params.get('formId'));
+    });
+  }
 }

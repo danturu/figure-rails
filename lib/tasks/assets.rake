@@ -7,7 +7,7 @@ namespace :assets do
     end
 
     task :tsd do
-      sh "tsd install && tsd rebundle"
+      sh "tsd reinstall --overwrite && tsd link && tsd rebundle"
     end
   end
 
