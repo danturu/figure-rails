@@ -8,8 +8,27 @@
     <%= tag :meta, name: "viewport", content: "width=device-width, initial-scale=1.0" %>
     <%= csrf_meta_tags %>
 
-    <%= javascript_include_tag "application" %>
+    <% javascript_include_tag "application" %>
     <%= stylesheet_link_tag    "application" %>
+
+    <!-- libs -->
+
+    <%= javascript_include_tag "system.src.js" %>
+
+    <script>
+      System.config({
+        baseURL: '/assets',
+        defaultJSExtensions: true
+      });
+    </script>
+
+    <%= javascript_include_tag "angular2.dev.js" %>
+    <%= javascript_include_tag "router.dev.js" %>
+    <%= javascript_include_tag "http.dev.js" %>
+
+    <!-- assets -->
+
+    <%= javascript_include_tag "init" %>
   </head>
 
   <body class="app">

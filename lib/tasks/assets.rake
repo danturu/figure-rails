@@ -1,17 +1,5 @@
 namespace :assets do
-  task install: %w(install:npm install:tsd)
-
-  namespace :install do
-    task :npm do
-      sh "npm install"
-    end
-
-    task :tsd do
-      sh "tsd reinstall --overwrite && tsd link && tsd rebundle"
-    end
-  end
-
-  task :precompile => "install:tsd" do
+  task :precompile do
     sh "gulp"
   end
 

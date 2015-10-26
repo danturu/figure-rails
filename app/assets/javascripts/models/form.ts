@@ -1,5 +1,5 @@
 import { Record }         from 'immutable'
-import { TimestampAttrs } from '../services/data'
+import { TimestampAttrs } from 'services/data'
 
 export interface FormAttrs extends TimestampAttrs {
   name: string;

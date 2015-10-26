@@ -1,23 +1,14 @@
-/// <reference path='typings/tsd/tsd.d.ts' />
-/// <reference path='typings/record.d.ts' />
-
-import 'core-js/es6/string'
-import 'core-js/es6/symbol'
-import 'core-js/es6/object'
-import 'reflect-metadata'
-import 'zone.js'
-
 import { Component, View, bootstrap }                       from 'angular2/angular2'
 import { ROUTER_DIRECTIVES, ROUTER_PROVIDERS, RouteConfig } from 'angular2/router'
 import { HTTP_PROVIDERS }                                   from 'angular2/http'
 import { Map, List }                                        from 'immutable'
 
-import { DataService, DataAction } from './services/data'
-import { RestService }             from './services/rest'
-import { Form, FormRecord }        from './models/form'
+import { DataService, DataAction } from 'services/data'
+import { RestService }             from 'services/rest'
+import { Form, FormRecord }        from 'models/form'
 
-import * as SharedComponent from './components/shared/shared'
-import * as FormComponent   from './components/forms/forms'
+import * as SharedComponent from 'components/shared/shared'
+import * as FormComponent   from 'components/forms/forms'
 
 @RouteConfig([
   { path: '/app/forms/new',         component: FormComponent.New,       as: "NewForm" },
@@ -62,4 +53,4 @@ class Figure {
   }
 }
 
-bootstrap(Figure, [ROUTER_PROVIDERS, HTTP_PROVIDERS]).catch(err => console.error(err));
+bootstrap(Figure, [ROUTER_PROVIDERS, HTTP_PROVIDERS])

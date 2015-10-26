@@ -1,8 +1,8 @@
-import { FORM_DIRECTIVES, Component, View, Input }            from 'angular2/angular2'
+import { FORM_DIRECTIVES, Component, View, Input }     from 'angular2/angular2'
 import { RouteParams, RouteConfig, ROUTER_DIRECTIVES } from 'angular2/router';
 
-import { DataService, DataAction } from '../../services/data'
-import { Form, FormRecord }        from '../../models/form'
+import { DataService, DataAction } from 'services/data'
+import { Form, FormRecord }        from 'models/form'
 
 @Component({
   selector: 'show.form'

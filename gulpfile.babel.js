@@ -1,84 +1,92 @@
-import gulp         from 'gulp';
-import RevAll       from 'gulp-rev-all';
-import autoprefixer from 'gulp-autoprefixer';
-import base64       from 'gulp-base64';
-import gulpif       from 'gulp-if';
-import minify       from 'gulp-minify-css';
-import sass         from 'gulp-sass';
-import sequence     from 'gulp-sequence';
-import sourcemaps   from 'gulp-sourcemaps';
-import uglify       from 'gulp-uglify';
-import util         from 'gulp-util';
-import watch        from 'gulp-watch';
-import browserify   from 'browserify';
-import buffer       from 'vinyl-buffer';
+import RevAll       from 'gulp-rev-all'
+import autoprefixer from 'gulp-autoprefixer'
+import base64       from 'gulp-base64'
+import browserify   from 'browserify'
 import del          from 'del'
-import source       from 'vinyl-source-stream';
-import tsify        from 'tsify';
-import watchify     from 'watchify';
+import gulp         from 'gulp';
+import gulpif       from 'gulp-if'
+import minify       from 'gulp-minify-css'
+import sass         from 'gulp-sass'
+import sequence     from 'gulp-sequence'
+import shell        from 'gulp-shell'
+import sourcemaps   from 'gulp-sourcemaps'
+import ts           from 'gulp-typescript'
+import util         from 'gulp-util'
+import watch        from 'gulp-watch'
+import watchify     from 'watchify'
 
-var env = process.env.NODE_ENV || 'development'
+let env = process.env.NODE_ENV || 'development'
 
-var config = {
+let config = {
   env: {
     production: env === 'production', development: env === 'development', test: env === 'test'
   },
 
   ext: {
-    svg: "svg", images: "{png,jpg}", fonts: "{eot,svg,ttf,woff,woff2}", sass: "{scss,css}"
+    svg: "svg", images: "{png,jpg}", fonts: "{eot,svg,ttf,woff,woff2}", sass: "{scss,css}", ts: "{ts,d.ts,js}"
   },
+
+  lib: [
+    "systemjs/dist/system.src.js",
+    "angular2/bundles/angular2.dev.js",
+    "angular2/bundles/router.dev.js",
+    "angular2/bundles/router.dev.js.map",
+    "angular2/bundles/http.dev.js",
+    "immutable/dist/immutable.js",
+  ],
 
   src: 'app/assets', dest: 'public/assets'
 }
 
-gulp.task('default', (callback) =>
-  sequence('reset', ['svg', 'fonts', 'images'], 'sass', 'ts', 'manifest', callback)
-);
-
-gulp.task('watch', (callback) =>
-  sequence('reset', ['svg', 'fonts', 'images'], 'sass', ['svg:watch', 'fonts:watch', 'images:watch', 'sass:watch', 'ts:watch'], callback)
-);
-
-gulp.task('reset', () =>
-  del(config.dest)
-);
-
-gulp.task('manifest', () => {
-  var revAll = new RevAll();
-
-  return gulp.src([`${config.dest}/**`])
-    .pipe(gulp.dest(config.dest))
-    .pipe(revAll.revision())
-    .pipe(gulp.dest(config.dest))
-    .pipe(revAll.manifestFile())
-    .pipe(gulp.dest(config.dest));
+let tsProject = ts.createProject('tsconfig.json', {
+  typescript: require('typescript')
 });
 
-gulp.task('svg', () =>
+// Main.
+
+gulp.task('postinstall', (done) =>
+  sequence('reset.typings', 'install.typings', done)
+);
+
+gulp.task('default', (done) =>
+  sequence('reset', 'build', 'build.manifest', done)
+);
+
+// Reset.
+
+gulp.task('reset.typings', (done) =>
+  del(`${config.src}/javascripts/typings/tsd`, done)
+);
+
+gulp.task('reset', (done) =>
+  del(config.dest, done)
+);
+
+// Install.
+
+gulp.task('install.typings', shell.task([
+  'tsd reinstall --overwrite', 'tsd link', 'tsd rebundle'
+]));
+
+// Build.
+
+gulp.task('build.svg', () =>
   gulp.src(`${config.src}/images/**/*.${config.ext.svg}`).pipe(gulp.dest(config.dest))
 );
 
-gulp.task('svg:watch', () =>
-  gulp.watch(`${config.src}/images/**/*.${config.ext.svg}`, ['svg'])
-)
-
-gulp.task('images', () =>
+gulp.task('build.images', () =>
   gulp.src(`${config.src}/images/**/*.${config.ext.images}`).pipe(gulp.dest(config.dest))
 );
 
-gulp.task('images:watch', () =>
-  gulp.watch(`${config.src}/images/**/*.${config.ext.images}`, ['images'])
-)
-
-gulp.task('fonts', () =>
+gulp.task('build.fonts', () =>
   gulp.src(`${config.src}/fonts/**/*.${config.ext.fonts}`).pipe(gulp.dest(config.dest))
 );
 
-gulp.task('fonts:watch', () =>
-  gulp.watch(`${config.src}/fonts/**/*.${config.ext.fonts}`, ['fonts'])
-)
+gulp.task('build.libs', () =>
+  gulp.src(config.lib.map(lib => `node_modules/${lib}`)).pipe(gulp.dest(config.dest))
+);
 
-gulp.task('sass', () =>
+gulp.task('build.sass', () =>
   gulp.src(`${config.src}/stylesheets/application.scss`)
     .pipe(sourcemaps.init({ loadMaps: true }))
     .pipe(sass({ includePaths: 'node_modules' }).on('error', sass.logError))
@@ -89,39 +97,61 @@ gulp.task('sass', () =>
     .pipe(gulp.dest(config.dest))
 );
 
-gulp.task('sass:watch', () =>
-  gulp.watch(`{${config.src}/stylesheets,node_modules}/**/*.${config.ext.sass}`, ['sass'])
+gulp.task('build.ts', () => {
+  let tsResult = gulp.src(`${config.src}/javascripts/**/*.${config.ext.ts}`)
+    .pipe(sourcemaps.init())
+    .pipe(ts(tsProject));
+
+  return tsResult.js
+    .pipe(sourcemaps.write())
+    .pipe(gulp.dest(config.dest));
+})
+
+gulp.task('build.index', () => {
+  console.log(gulp.src([`${config.dest}/**/*.js`], { base: config.dest }))
+});
+
+gulp.task('build.manifest', () => {
+  var revAll = new RevAll();
+
+  return gulp.src([`${config.dest}/**`])
+    .pipe(gulp.dest(config.dest))
+    .pipe(revAll.revision())
+    .pipe(gulp.dest(config.dest))
+    .pipe(revAll.manifestFile())
+    .pipe(gulp.dest(config.dest));
+});
+
+gulp.task('build', (done) =>
+  sequence('reset', ['build.svg', 'build.fonts', 'build.images', 'build.libs'], 'build.sass', 'build.ts', done)
+);
+
+// Watch.
+
+gulp.task('watch.svg', () =>
+  gulp.watch(`${config.src}/images/**/*.${config.ext.svg}`, ['build.svg'])
 )
 
-gulp.task('ts', ts());
+gulp.task('watch.images', () =>
+  gulp.watch(`${config.src}/images/**/*.${config.ext.images}`, ['build.images'])
+)
 
-gulp.task('ts:watch', ts({ watch: true }));
+gulp.task('watch.fonts', () =>
+  gulp.watch(`${config.src}/fonts/**/*.${config.ext.fonts}`, ['build.fonts'])
+)
 
-function ts(options={}) {
-  var b = browserify(Object.assign({}, watchify.args, { debug: config.env.production }))
-    .add(`${config.src}/javascripts/application.ts`)
-    .plugin(tsify, {
-      target: 'es5',
-      module: 'commonjs',
-      noImplicitAny: true,
-      experimentalDecorators: true,
-      emitDecoratorMetadata: true
-    });
+gulp.task('watch.sass', () =>
+  gulp.watch(`${config.src}/stylesheets/**/*.${config.ext.sass}`, ['build.sass'])
+)
 
-  if (options.watch == true) {
-    b = watchify(b).on('update', bundle).on('log', util.log);
-  }
+gulp.task('watch.libs', () =>
+  gulp.watch(config.lib.map(lib => `node_modules/${lib}`), ['build.libs'])
+);
 
-  function bundle() {
-    return b.bundle()
-      .on('error', util.log.bind(util, 'Browserify Error'))
-      .pipe(source('application.js'))
-      .pipe(buffer())
-      .pipe(sourcemaps.init({ loadMaps: true }))
-      .pipe(gulpif(config.env.production, uglify()))
-      .pipe(sourcemaps.write('.'))
-      .pipe(gulp.dest(config.dest));
-  }
+gulp.task('watch.ts', () =>
+  gulp.watch(`${config.src}/javascripts/**/*.${config.ext.ts}`, ['build.ts'])
+);
 
-  return bundle;
-}
+gulp.task('watch', (done) =>
+  sequence('reset', 'build', ['watch.svg', 'watch.fonts', 'watch.images', 'watch.libs', 'watch.sass', 'watch.ts'], done)
+);
