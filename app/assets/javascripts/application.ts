@@ -3,12 +3,12 @@ import { ROUTER_DIRECTIVES, ROUTER_PROVIDERS, RouteConfig } from 'angular2/route
 import { HTTP_PROVIDERS }                                   from 'angular2/http'
 import { Map, List }                                        from 'immutable'
 
-import { DataService, DataAction } from 'services/data'
-import { RestService }             from 'services/rest'
-import { Form, FormRecord }        from 'models/form'
+import { DataService, DataAction } from './services/data'
+import { RestService }             from './services/rest'
+import { Form, FormRecord }        from './models/form'
 
-import * as SharedComponent from 'components/shared/shared'
-import * as FormComponent   from 'components/forms/forms'
+import * as SharedComponent from './components/shared/shared'
+import * as FormComponent   from './components/forms/forms'
 
 @RouteConfig([
   { path: '/app/forms/new',         component: FormComponent.New,       as: "NewForm" },

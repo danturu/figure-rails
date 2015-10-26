@@ -1,5 +1,5 @@
 import { CORE_DIRECTIVES, FORM_DIRECTIVES, Component, View } from 'angular2/angular2'
-import { Form, FormRecord }                                  from 'models/form'
+import { Form, FormRecord }                                  from '../../models/form'
 
 @Component({
   selector: 'new.form'

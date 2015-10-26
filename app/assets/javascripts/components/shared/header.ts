@@ -2,7 +2,7 @@ import { CORE_DIRECTIVES, Component, View, Input, Pipe, PipeTransform, ChangeDet
 import { ROUTER_DIRECTIVES, Location }                                                           from 'angular2/router'
 import { List }                                                                                  from 'immutable'
 
-import { Form } from 'models/form'
+import { Form } from '../../models/form'
 
 @Pipe({
   name: 'sort'
