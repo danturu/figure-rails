@@ -5,11 +5,10 @@ export interface FormAttrs extends TimestampAttrs {
   name: string;
 }
 
-export const FormRecord = Record<FormAttrs>({
-  id:        null,
-  createdAt: null,
-  updatedAt: null,
-  name:      null,
-})
+export class Form extends Record<FormAttrs>({ id: null, name: null }) implements FormAttrs {
+  id:        string;
+  createdAt: string;
+  updatedAt: string;
+  name:      string;
+}
 
-export type Form = Record.Generic<FormAttrs>;

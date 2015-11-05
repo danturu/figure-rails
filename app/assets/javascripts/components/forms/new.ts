@@ -1,5 +1,7 @@
-import { CORE_DIRECTIVES, FORM_DIRECTIVES, Component, View } from 'angular2/angular2'
-import { Form, FormRecord }                                  from '../../models/form'
+import { CORE_DIRECTIVES, FORM_DIRECTIVES, Component, View, FormBuilder, ControlGroup, Validators } from 'angular2/angular2'
+
+import { DataService }     from '../../services/data'
+import { FormAttrs, Form } from '../../models/form'
 
 @Component({
   selector: 'new.form'
@@ -14,26 +16,31 @@ import { Form, FormRecord }                                  from '../../models/
       <p>Smart name matters</p>
     </header>
 
-    <form #f="form" (ng-submit)="onSubmit(f.value)">
-      <label>
-        <div>Name</div>
-        <input type="text" ng-control="name">
-      </label>
-
-      <label>
-        <div>Notifications</div>
-        <input type="text" ng-control="email">
-      </label>
+    <form #f="form" [ng-form-model]="newForm" (submit)="onSubmit(f.value)">
+      <div>
+        <label class="name">
+          <div>Name</div>
+          <input type="text" ng-control="name">
+        </label>
+      </div>
 
       <div>
-        <button type="submit">Create Form</form>
+        <button type="submit" [disabled]="!f.valid">Create Form</form>
       </div>
     </form>
   `
 })
 
 export class New {
-  onSubmit(data: Form) {
-    console.log(data);
+  newForm: ControlGroup;
+
+  constructor(builder: FormBuilder, private data: DataService) {
+    this.newForm = builder.group({
+      name: ["", Validators.required]
+    });
+  }
+
+  onSubmit(form: FormAttrs) {
+    this.data.store<Form>("forms").create(new Form(form));
   }
 }

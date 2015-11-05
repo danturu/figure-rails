@@ -153,5 +153,5 @@ gulp.task('watch.ts', () =>
 );
 
 gulp.task('watch', (done) =>
-  sequence('reset', 'build', ['watch.svg', 'watch.fonts', 'watch.images', 'watch.libs', 'watch.sass', 'watch.ts'], done)
+  sequence('build', ['watch.svg', 'watch.fonts', 'watch.images', 'watch.libs', 'watch.sass', 'watch.ts'], done)
 );

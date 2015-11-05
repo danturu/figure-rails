@@ -1,7 +1,7 @@
 import { Injectable, EventEmitter } from 'angular2/angular2'
 import { Map, List, Record }        from 'immutable'
 
-// Errors
+// Errors.
 
 abstract class BaseException extends Error {
   public stack: any;
@@ -23,7 +23,7 @@ export class DataUpdateException extends BaseException { }
 
 export class DataRemoveException extends BaseException { }
 
-// Interfaces
+// Interfaces.
 
 export interface BaseAttrs {
   id?: string;
@@ -34,24 +34,28 @@ export interface TimestampAttrs extends BaseAttrs {
   updatedAt?: string;
 }
 
-// Services
+// Types.
 
-export class DataSnapshot<T extends Record.Generic<BaseAttrs>> {
-  constructor(private data: Map<string, T>) {
-  }
-
-  val(): Map<string, T> {
-    return this.data;
-  }
-}
+export type BaseRecord = BaseAttrs & Record.Base;
 
 export enum DataAction { Change, Create, Update, Remove }
 
-@Injectable()
-export class DataStore<T extends Record.Generic<BaseAttrs>> {
-  private data = Map<string, T>();
+// Services.
 
-  private actions = Map<DataAction, EventEmitter>([
+export class DataSnapshot<T extends BaseRecord> {
+  constructor(private _data: Map<string, T>) {
+  }
+
+  data(): Map<string, T> {
+    return this._data;
+  }
+}
+
+@Injectable()
+export class DataStore<T extends BaseRecord> {
+  private _storage = Map<string, T>();
+
+  private _actions = Map<DataAction, EventEmitter>([
     [DataAction.Change, new EventEmitter()],
     [DataAction.Create, new EventEmitter()],
     [DataAction.Update, new EventEmitter()],
@@ -59,39 +63,41 @@ export class DataStore<T extends Record.Generic<BaseAttrs>> {
   ]);
 
   get(): DataSnapshot<T> {
-    return new DataSnapshot(this.data);
+    return new DataSnapshot(this._storage);
   }
 
   set(data: Map<string, T>, merge: boolean = false) {
     if (merge) {
-      this.data = this.data.merge(data);
+      this._storage = this._storage.merge(data);
     } else {
-      this.data = data
+      this._storage = data
     }
 
     this.emit(DataAction.Change);
   }
 
-  has(model: T | string): boolean {
-    return this.data.has(this.key(model));
+  has(data: T | string): boolean {
+    let key = this.key(data);
+
+    return key && this._storage.has(key);
   }
 
-  create(model: T) {
-    if (this.has(model)) {
+  create(data: T) {
+    if (this.has(data)) {
       throw new DataCreateException();
     } else {
-      this.data = this.data.set(model.id, model);
+      this._storage = this._storage.set(data.id, data);
 
-      this.emit(DataAction.Remove, new DataSnapshot(Map<string, T>([[model.id, model]])));
+      this.emit(DataAction.Create, new DataSnapshot(Map<string, T>([[data.id, data]])));
       this.emit(DataAction.Change);
     }
   }
 
-  update(model: T) {
-    if (this.has(model)) {
-      this.data = this.data.set(model.id, model);
+  update(data: T) {
+    if (this.has(data)) {
+      this._storage = this._storage.set(data.id, data);
 
-      this.emit(DataAction.Remove, new DataSnapshot(Map<string, T>([[model.id, model]])));
+      this.emit(DataAction.Update, new DataSnapshot(Map<string, T>([[data.id, data]])));
       this.emit(DataAction.Change);
     } else {
       throw new DataUpdateException();
@@ -99,12 +105,12 @@ export class DataStore<T extends Record.Generic<BaseAttrs>> {
   }
 
   remove(id: string | T) {
-    let model = this.data.get(this.key(id));
+    let data = this._storage.get(this.key(id));
 
-    if (this.has(model)) {
-      this.data = this.data.delete(model.id);
+    if (this.has(data)) {
+      this._storage = this._storage.delete(data.id);
 
-      this.emit(DataAction.Remove, new DataSnapshot(Map<string, T>([[model.id, model]])));
+      this.emit(DataAction.Remove, new DataSnapshot(Map<string, T>([[data.id, data]])));
       this.emit(DataAction.Change);
     } else {
       throw new DataRemoveException();
@@ -116,15 +122,15 @@ export class DataStore<T extends Record.Generic<BaseAttrs>> {
       next(this.get());
     }
 
-    return this.actions.get(action).observer({ next: next });
+    return this._actions.get(action).observer({ next: next });
   }
 
-  private emit(action: DataAction, data: DataSnapshot<T> = new DataSnapshot(this.data)) {
-    this.actions.get(action).next(data);
+  private emit(action: DataAction, snapshot: DataSnapshot<T> = new DataSnapshot(this._storage)) {
+    this._actions.get(action).next(snapshot);
   }
 
-  private key(model: T | string): string {
-    return typeof model === "string" ? model : (<T>model).id;
+  private key(data: T | string): string {
+    return typeof data === "string" ? data : data.id;
   }
 }
 
@@ -132,7 +138,7 @@ export class DataStore<T extends Record.Generic<BaseAttrs>> {
 export class DataService {
   stores = Map<string, DataStore<any>>();
 
-  store<T extends Record.Generic<BaseAttrs>>(key: string): DataStore<T> {
+  store<T extends BaseRecord>(key: string): DataStore<T> {
     if (!this.stores.has(key)) {
       this.stores = this.stores.set(key, new DataStore<T>());
     }

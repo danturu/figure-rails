@@ -1,8 +1,11 @@
-import { FORM_DIRECTIVES, Component, View, Input }     from 'angular2/angular2'
-import { RouteParams, RouteConfig, ROUTER_DIRECTIVES } from 'angular2/router';
+import { FORM_DIRECTIVES, Component, View, Input, ViewChild }     from 'angular2/angular2'
+import { RouterOutlet, RouteParams, RouteConfig, ROUTER_DIRECTIVES } from 'angular2/router';
 
 import { DataService, DataAction } from '../../services/data'
-import { Form, FormRecord }        from '../../models/form'
+import { Form }                    from '../../models/form'
+
+class DashboardRouterView {
+}
 
 @Component({
   selector: 'show.form'
@@ -16,7 +19,7 @@ import { Form, FormRecord }        from '../../models/form'
   `
 })
 
-class Show {
+class Show extends DashboardRouterView {
   @Input() form: Form;
 }
 
@@ -32,7 +35,7 @@ class Show {
   `
 })
 
-class Edit {
+class Edit extends DashboardRouterView {
   @Input() form: Form;
 }
 
@@ -65,19 +68,29 @@ class Edit {
 })
 
 export class Dashboard {
+  @ViewChild(RouterOutlet) routerOutlet: RouterOutlet;
+
   form: Form;
 
-  constructor(params: RouteParams, data: DataService) {
-    let store = data.store<Form>("forms")
+  constructor(_params: RouteParams, private _data: DataService) {
+    let store = this._data.store<Form>("forms")
 
     store.on(DataAction.Change, (snapshot) => {
-      if (!this.form) {
-        this.form = snapshot.val().get(params.get('formId'));
+      if (snapshot.data().has(_params.get('formId'))) {
+        this.form = snapshot.data().get(_params.get('formId'));
+      } else {
+
       }
     });
 
     store.on(DataAction.Update, (snapshot) => {
-      this.form = snapshot.val().get(params.get('formId'));
+      if (snapshot.data().has(_params.get('formId'))) {
+        this.form = snapshot.data().get(_params.get('formId'));
+      }
     });
+  }
+
+  afterViewInit() {
+    console.log(this.routerOutlet);
   }
 }
